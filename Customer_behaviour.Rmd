@@ -1,23 +1,8 @@
-A company that sells some of the product, and you want to know how well does the selling performance of the product. You have the data that can we analyze, but what kind of analysis that we can do? Well, we can segment customers based on their buying behavior on the market.
-
-
-Objective:
-Understand the Dataset & cleanup (if required).
-Build a clustering model to segment the customer-based similarity.
-
-
-
-
-
-
-
+---
+---
+---
 
 STEP1- DATA CLEANING
-
-
-library(dplyr): This line loads the "dplyr" library, which provides a set of functions to work with data frames efficiently.
-data <- read.csv("nd.csv"): This line reads the CSV file named "nd.csv" and stores its content in a variable called "data". The read.csv function is used to read tabular data from a CSV file into a data frame, which is a common data structure used in R to work with structured data.
-
 
 ```{r}
 # Load the required libraries
@@ -27,30 +12,17 @@ library(dplyr)
 data <- read.csv("nd.csv")
 ```
 
-ead(data), it will display the first few rows of the "data" data frame.
-
-
 ```{r}
 head(data)
 ```
+
 ```{r}
 tail(data)
 ```
 
- execute str(data), it will display information about the structure of the "data" data frame. This includes the total number of observations (rows) and variables (columns) in the data frame, as well as the data types of each variable.
-
-
-
 ```{r}
 str(data)
 ```
-
-missing_values <- sum(is.na(data)): Here, we calculate the total number of missing values in the data frame. The is.na() function checks each element of the data frame for missing values, and sum() adds up the TRUE values (which represent missing values). The result is stored in the variable missing_values.
-
-
-data <- na.omit(data): This line removes any rows from the data frame that have missing values. The na.omit() function is used to omit (remove) rows containing any missing values. The modified data frame is then assigned back to the variable data.
-
-
 
 ```{r}
 #  Handling Missing Values
@@ -63,14 +35,6 @@ data <- na.omit(data)
 
 ```
 
-
-Data frame based on the unique invoice numbers.
-
-summarise(is_canceled = any(Quantity < 0)): This operation creates a new variable called "is_canceled" in the "canceled_invoices" data frame. It uses the summarise() function from the dplyr package. The any() function checks if any value in the "Quantity" column for a particular invoice is less than zero, indicating a canceled invoice. If any value is less than zero, it assigns a value of "TRUE" to the "is_canceled" variable for that invoice; otherwise, it assigns "FALSE".
-
-
-
-
 ```{r}
 # 3.2. Treating Canceled Invoices
 
@@ -79,16 +43,6 @@ canceled_invoices <- data %>%
   group_by(InvoiceNo) %>%
   summarise(is_canceled = any(Quantity < 0))
 ```
-
-
-data <- data %>% ...: This line assigns the result of the following operations back to the variable "data" to update the data frame.
-
-filter(!(InvoiceNo %in% canceled_invoices$InvoiceNo & Quantity < 0)): 
-This operation filters the data frame to remove rows that meet the specified conditions. Here, we use the filter() function from the dplyr package. The condition InvoiceNo %in% canceled_invoices$InvoiceNo checks if the "InvoiceNo" value is present in the "InvoiceNo" column of the "canceled_invoices" data frame, indicating a canceled invoice. The condition Quantity < 0 checks if the quantity value is negative. The ! symbol negates the condition, so we keep the rows that don't satisfy both conditions (i.e., not canceled invoices with positive quantities).
-
-print(data): This line displays the resulting cleaned data frame on the console using the print() function.
-
-
 
 ```{r}
 # Filter out canceled invoices
@@ -99,23 +53,8 @@ data <- data %>%
 print(data)
 
 ```
+
 FEATURE EXTRACTION
-
-
-
-We load the required libraries, including "dplyr" for data manipulation and "stringr" for string operations.
-
-We convert the "InvoiceDate" column to a date format using as.Date() function and specify the format as "%d-%m-%Y %H:%M".
-
-We extract the day, month, and year from the "InvoiceDate" column and store them in separate columns named "Day", "Month", and "Year" using the format() function.
-
-We extract the hour and minute from the "InvoiceDate" column and store them in separate columns named "Hour" and "Minute" using the format() function.
-
-We calculate the total price by multiplying the "Quantity" and "UnitPrice" columns and store the result in a new column called "TotalPrice".
-
-We extract the length of the "Description" column using the str_length() function from the "stringr" package and store the result in a new column called "DescriptionLength".
-
-Finally, we display the modified data frame with the extracted features using the print() function.
 
 ```{r}
 # Load the required libraries
@@ -144,10 +83,9 @@ data$DescriptionLength <- str_length(data$Description)
 print(data)
 
 ```
+
 RMF ANALYSIS
 
-
-alculates the RFM metrics (Recency, Frequency, Monetary) for each customer based on the provided data frame. It groups the data by customer ID and calculates the recency, frequency, and monetary values using appropriate operations. The resulting RFM data frame, "rfm_data," contains the calculated metrics for each customer and can be used for further analysis or customer segmentation.
 ```{r}
 # Calculate RFM metrics for each customer
 rfm_data <- data %>%
@@ -163,6 +101,7 @@ print(rfm_data)
 
 
 ```
+
 ```{r}
 # Calculate RFM scores
 rfm_data <- rfm_data %>%
@@ -197,6 +136,7 @@ segment_summary <- rfm_data %>%
 print(segment_summary)
 
 ```
+
 ```{r}
 marketing_strategies <- case_when(
   rfm_data$RFM_Segment == "111" ~ "VIP customers - Provide personalized offers and exclusive perks",
@@ -218,10 +158,9 @@ kable(segment_strategies, "html")
 
 DATA VISUALISATIONS
 
-
-
-
 ```{r}
+
+library(ggplot2)
 # Scatter plot for UnitPrice by Quantity
 ggplot(data, aes(x = Quantity, y = UnitPrice)) +
   geom_point(color = "darkorange") +
@@ -229,11 +168,6 @@ ggplot(data, aes(x = Quantity, y = UnitPrice)) +
   theme_minimal()
 
 ```
-
-
-
-
-
 
 ```{r}
 # Line plot for Revenue by InvoiceDate
@@ -247,11 +181,7 @@ ggplot(revenue_by_date, aes(x = InvoiceDate, y = `Quantity * UnitPrice`)) +
 
 ```
 
-
-
 CLV
-
-
 
 ```{r}
 library(dplyr)
@@ -288,6 +218,7 @@ clv_data <- clv_data %>% arrange(desc(CLV))
 # Print the CLV data
 print(clv_data)
 ```
+
 ```{r}
 library(ggplot2)
 
@@ -299,6 +230,7 @@ ggplot(clv_data, aes(x = reorder(CustomerID, -CLV), y = CLV)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 ```
+
 ```{r}
 # Scatter plot of CLV vs. Average Order Value
 ggplot(clv_data, aes(x = AverageOrderValue, y = CLV, color = PurchaseFrequency)) +
@@ -322,8 +254,6 @@ print(ggplot(data, aes(x = "", y = TotalPrice)) +
   geom_boxplot() +
   labs(title = "Box Plot of Total Price"))
 ```
-
-
 
 ```{r}
 # Load the required libraries
@@ -355,6 +285,7 @@ ggplot(data, aes(x = TotalPrice)) +
 # Show the cleaned data
 print(data)
 ```
+
 EDA
 
 ```{r}
@@ -392,6 +323,7 @@ print(ggplot(revenue_by_country, aes(x = reorder(Country, TotalRevenue), y = Tot
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(plot.title = element_text(size = 1), axis.title = element_text(size = 14), axis.text = element_text(size = 12)))
 ```
+
 ```{r}
 
 # Calculate the total revenue by month
@@ -419,6 +351,7 @@ print(ggplot(revenue_by_month, aes(x = Month, y = TotalRevenue, fill = TotalReve
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(plot.title = element_text(size = 20), axis.title = element_text(size = 16), axis.text = element_text(size = 14)))
 ```
+
 ```{r}
 
 # 5.3. Revenue by Day of the Week
@@ -454,6 +387,7 @@ print(ggplot(revenue_by_day, aes(x = DayOfWeek, y = TotalRevenue, fill = TotalRe
 
 
 ```
+
 ```{r}
 
 # 5.4. Top 10 Customers by Revenue
@@ -482,6 +416,7 @@ print(ggplot(revenue_by_customer, aes(x = reorder(CustomerID, TotalRevenue), y =
   theme(plot.title = element_text(size = 20), axis.title = element_text(size = 16), axis.text = element_text(size = 14)))
 
 ```
+
 ```{r}
 
 # Calculate RFM metrics for each customer
@@ -507,6 +442,7 @@ print(ggplot(rfm_data, aes(x = Recency, y = Frequency, color = Monetary)) +
   labs(title = "Customers RFM", x = "Recency", y = "Frequency", color = "Monetary") +
   theme(plot.title = element_text(size = 20), axis.title = element_text(size = 16), axis.text = element_text(size = 14)))
 ```
+
 ```{r}
 
 library(tidyverse)
@@ -522,6 +458,7 @@ rules <- apriori(transactions, parameter = list(support = 0.01, confidence = 0.5
 inspect(rules)
 
 ```
+
 ```{r}
 library(cluster)
 library(plotly)
@@ -554,6 +491,7 @@ plot_ly(cluster_plot, x = ~Quantity, y = ~UnitPrice, z = ~CustomerID, color = ~c
 
 
 ```
+
 ```{r}
 
 cluster_means <- aggregate(clustering_data, by = list(cluster = cluster_assignments), FUN = mean)
@@ -577,4 +515,3 @@ ggplot(bar_plot, aes(x = cluster, y = count)) +
        x = "Cluster", y = "Count") +
   theme_minimal()
 ```
-

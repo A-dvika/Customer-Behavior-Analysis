@@ -1,4 +1,4 @@
-##Customer Behavior Analysis and Revenue Insights for a Retail Business: A Data-Driven Approach.
+#Customer Behavior Analysis and Revenue Insights for a Retail Business: A Data-Driven Approach.
 
 This work is a detailed data analysis project that focuses on customer behavior and revenue analysis for a retail business. It involves various steps to clean the data, extract relevant features, analyze customer behavior, calculate customer lifetime value, remove outliers, and explore revenue patterns. The goal of this analysis is to gain insights into customer segments, understand their purchasing patterns, identify high-value customers, and explore revenue trends by different factors such as country, month, and day of the week.
 
